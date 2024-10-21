@@ -1,0 +1,156 @@
+---
+title: "Hw 3"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+```
+
+
+```{r}
+data = read_csv("county_data.csv")
+wake = data |>
+  filter(COUNTYFP=="183")
+wake 
+
+#Confirms the dataset has only Wake County residents
+sum(wake$triangle_census_total_population)
+```
+
+
+What percentage of the Wake County population resides in food deserts?
+```{r}
+#Find the total number of people in a food desert and not in a food desert
+wake |>
+  group_by(food_des) |>
+  summarize(triangle_census_total_population=sum(triangle_census_total_population)) |>
+  ungroup()
+```
+`
+```{r}
+#Find the percentage using the number of people in a food desert and the total number of people in the county
+#1 is not in a food desert, 0 is in a food desert
+(906882 / 1069079) * 100
+```
+
+
+Evaluate the demographic makeup of the food deserts—are residents of food deserts more likely to be poor or not own cars than the residents of Wake County as a whole (again, make sure you only include Wake County residents)? Calculate the percentage of households that do not own a vehicle, and the percentage of households who are low income, in both the food desert and Wake County overall.
+
+```{r}
+#Total number of households that don't own a vehicle
+wake |>
+  group_by(food_des) |>
+  summarize(triangle_census_zero_vehicle_households=sum(triangle_census_zero_vehicle_households)) |>
+  ungroup()
+
+#Total number of households in Wake County 
+sum(wake$triangle_census_total_households) 
+# value = 400172
+
+#1 is not in a food desert, 0 is in a food desert
+#Food desert households without a vehicle 
+(11267 / 400172) * 100
+# Value = 2.815539
+
+#Not food desert households without a vehicle 
+(4611 / 400172) * 100
+# Value = 1.152255
+
+```
+
+```{r}
+#Total number of households that are low income
+wake |>
+  group_by(food_des) |>
+  summarize(triangle_census_households_income_less_than_35k = sum(triangle_census_households_income_less_than_35k)) |>
+  ungroup()
+
+#Total number of households in Wake County 
+sum(wake$triangle_census_total_households) 
+# value = 400172
+
+#1 is not in a food desert, 0 is in a food desert
+#Food desert households that are low income
+(58519 / 400172) * 100
+# Value = 14.62346
+
+#Not food desert households that are low income
+(16714	 / 400172) * 100
+# Value = 4.176704
+
+```
+
+2 Mile Criterion 
+```{r}
+#Add new data with classified food desert block group utilizing two mile criterion
+wake2 = read_csv("county_data2.csv") |>
+  filter(COUNTYFP=="183")
+wake2
+```
+
+```{r}
+#Find the total number of people in a food desert and not in a food desert
+wake2 |>
+  group_by(twom_fd) |>
+  summarize(triangle_census_total_population=sum(triangle_census_total_population)) |>
+  ungroup()
+
+#Find the total number of people in the county
+sum(wake2$triangle_census_total_population)
+
+#Find the percentage using the number of people in a food desert and the total number of people in the county
+#1 is not in a food desert, 0 is in a food desert
+(400285 / 1069079) * 100
+```
+
+```{r}
+#Total number of households that don't own a vehicle
+wake2 |>
+  group_by(twom_fd) |>
+  summarize(triangle_census_zero_vehicle_households=sum(triangle_census_zero_vehicle_households)) |>
+  ungroup()
+
+#Total number of households in Wake County 
+sum(wake2$triangle_census_total_households) 
+# value = 400172
+
+#1 is not in a food desert, 0 is in a food desert
+#Food desert households without a vehicle 
+(3186 / 400172) * 100
+# Value = 0.7961577
+
+#Not food desert households without a vehicle 
+(12692 / 400172) * 100
+# Value = 3.171636
+
+```
+
+```{r}
+#Total number of households that are low income
+wake2 |>
+  group_by(twom_fd) |>
+  summarize(triangle_census_households_income_less_than_35k = sum(triangle_census_households_income_less_than_35k)) |>
+  ungroup()
+
+#Total number of households in Wake County 
+sum(wake2$triangle_census_total_households) 
+# value = 400172
+
+#1 is not in a food desert, 0 is in a food desert
+#Food desert households that are low income
+(22228 / 400172) * 100
+# Value = 5.554612
+
+#Not food desert households that are low income
+(53005	/ 400172) * 100
+# Value = 13.24555
+
+```
+
+
+
+
